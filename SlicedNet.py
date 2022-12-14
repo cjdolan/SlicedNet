@@ -64,9 +64,7 @@ class ThetaBlock(nn.Module):
     channels = 0
     for i in cons:
       channels += self.layer_ins[i]
-    # if 0 in cons:
-    #   channels += self.start
-    #   channels -= self.growth_rate
+
     return cons, channels
 
   def __init__(self, in_channels_num, growth_rate, nlayers, angle, keepbase, mid_mult):
@@ -80,7 +78,6 @@ class ThetaBlock(nn.Module):
     self.layer_ins = []
     self.layer_ins.append(in_channels_num)
     for l in range(nlayers):
-      #print(in_channels_num)
 
       in_channels_num = self.get_connects(l+1)[1]
       out_chans = growth_rate
@@ -89,8 +86,6 @@ class ThetaBlock(nn.Module):
 
       self.layers_.append(BottleneckLayerThetaLayer(in_channels_num, growth_rate, out_chans, self.mid_mult))
       self.layer_ins.append(out_chans)
-      # if int(self.angle * (l+1)) == int(self.angle * (l)):
-      #     self.in_channels_num += growth_rate
 
     self.layers = nn.ModuleList(self.layers_)
 
@@ -106,12 +101,8 @@ class ThetaBlock(nn.Module):
         
     for layer in range(len(self.layers)):
         link = self.get_connects(layer+1)[0]
-        #thresh = int(self.angle * (layer+1))
 
         tin = []
-        #print(layer)
-        #print(link)
-        #print('--------')
         for i in link:
             tin.append(layers_[i])
         if len(tin) > 1:            
@@ -129,7 +120,6 @@ class ThetaBlock(nn.Module):
           i >= thresh or i==0:
           out_.append(layers_[i])
     out = torch.cat(out_, 1)
-    #print(out.shape)
     return out
 
 
