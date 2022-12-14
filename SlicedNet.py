@@ -139,11 +139,7 @@ class DenseNetTheta(nn.Module):
     cur_channels = 2*growth_rate
     self.angle = theta
     self.network = nn.Sequential()
-    #self.network.append(nn.Conv2d(3, cur_channels, kernel_size=(7,7), stride=2, padding=3, bias=False))
     self.network.append(nn.Conv2d(3, cur_channels, kernel_size=(3,3), padding=1, bias=False))
-    # self.network.append(nn.BatchNorm2d(cur_channels))
-    # self.network.append(nn.ReLU(inplace=True))
-    # self.network.append(nn.MaxPool2d(kernel_size=(3,3), stride=2, padding=1))
     
     for nb in num_blocks[0:-1]:
       bnt = ThetaBlock(cur_channels, growth_rate, nb, self.angle, False, mid_mult)
@@ -164,12 +160,9 @@ class DenseNetTheta(nn.Module):
 
     self.linear = nn.Linear(cur_channels, 100, bias=True)
 
-    #self.softmax = nn.Softmax(-1)
-
   def forward(self, x):
     x = self.network(x)
     x = self.pool(x)
     x = x.view(x.size()[0], -1)
     x = self.linear(x)
-    #x = self.softmax(x)
     return x
